@@ -360,6 +360,97 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   .names{height:160px;margin-top:8px}.names .n2{top:82px}.names .amp{top:44px;font-size:32px}
   .seal{width:min(22%,110px)}
 }
+
+/* ---------- wide screens: tablets, unfolded foldables, desktops ---------- */
+@media (min-aspect-ratio:1/1){
+  .flap__face{background-image:url("images/envelope_wide.jpg")}
+}
+@media (min-width:700px) and (min-height:521px){
+  body{background:var(--paper) url("images/paper.jpg") 0 0/100% auto repeat-y}
+  #app{max-width:none;box-shadow:none}
+  .env__stage{width:100%}
+  .seal{width:clamp(130px,16vmin,190px)}
+  .scene{padding-block:110px;padding-inline:max(48px,calc((100% - 1040px) / 2))}
+  .music{right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));width:54px;height:54px}
+  .music .disc{width:36px;height:36px}
+
+  /* hero */
+  .hero{padding-top:calc(11vh + env(safe-area-inset-top,0px))}
+  .bfly-pos{width:clamp(180px,20vw,240px)}
+  .hero__stage{min-height:440px;margin-top:36px}
+  .ph-a__1,.ph-a__3,.ph-b__1{font-size:18px}
+  .ph-a__2{font-size:clamp(60px,8vw,88px)}
+  .ph-a__guest{font-size:15px;margin-top:40px}
+  .ph-a__name{font-size:clamp(40px,4.6vw,52px)}
+  .names{max-width:640px;height:300px;margin-top:24px}
+  .names .n1,.names .n2{font-size:clamp(66px,8.4vw,96px)}
+  .names .n2{top:150px}
+  .names .amp{top:92px;font-size:54px}
+
+  /* date: arch left, date right */
+  .s-date{display:grid;grid-template-columns:1fr 1fr;column-gap:72px;align-items:center}
+  .s-date .arch{grid-row:1 / 3;width:min(82%,380px);justify-self:center}
+  .s-date .celebr{grid-column:2;align-self:end;margin:0}
+  .s-date .when{grid-column:2;align-self:start;margin-top:26px}
+  .when__row{max-width:420px}
+  .when__row b{font-size:76px}
+  .count b{font-size:40px}
+
+  /* families left, invitation right */
+  .family{display:grid;grid-template-columns:1fr 1.35fr;column-gap:0;align-items:center}
+  .family .fam{grid-template-columns:1fr;gap:44px;padding-right:56px}
+  .family > .orn{display:none}
+  .family .invite{margin-top:0;padding-left:56px;border-left:1px solid var(--line)}
+  .fam p{font-size:17px}
+
+  /* timeline as a row */
+  .s-tl .spray{width:min(640px,100%);margin:0 auto}
+  .tl{display:grid;grid-template-columns:repeat(3,1fr);max-width:860px;margin-top:36px}
+  .tl li{padding:6px 18px}
+  .tl li + li{border-left:1px solid var(--line)}
+  .tl li .orn{display:none}
+  .tl__l{font-size:15px}
+  .tl__t{font-size:22px}
+
+  /* details: venue and dress code side by side */
+  .s-details{display:grid;grid-template-columns:1.4fr 1fr;column-gap:64px;align-items:start}
+  .s-details .the{grid-column:1 / -1}
+  .s-details .block{margin-top:48px}
+  .map-card{max-width:460px}
+
+  /* album: masonry columns */
+  .album{display:block;column-count:3;column-gap:14px;margin-top:40px}
+  .album button{width:100%;margin:0 0 14px;break-inside:avoid}
+  .a-wide{aspect-ratio:3/2}
+  .a-tall{aspect-ratio:3/4.3}
+  .a-side{aspect-ratio:2/3}
+  .a-half{aspect-ratio:3/4}
+  .a-wide2{aspect-ratio:4/3}
+
+  /* rsvp: heading left, form right */
+  .rsvp{display:grid;grid-template-columns:1fr 1fr;column-gap:72px;align-items:center;grid-template-areas:"h f" "l f";padding-top:130px;padding-bottom:150px}
+  .rsvp-h{grid-area:h;align-self:end}
+  .rsvp-lead{grid-area:l;align-self:start}
+  .rsvp .form{grid-area:f;width:100%;max-width:440px;margin-top:0}
+  .leaf{width:24%;max-width:280px}
+  .leaf--tl{top:-40px;left:-20px}
+
+  /* ending */
+  .cart{width:min(52vw,440px)}
+  .cart__names{font-size:46px}
+  .end__date{font-size:28px}
+
+  /* overlays */
+  .lb__box{width:100%}
+  .lb__slide{padding:64px 72px}
+  .lb__nav{width:56px;height:80px;margin-top:-40px}
+  .lb__nav svg{width:30px;height:30px}
+  .lb__prev{left:12px}.lb__next{right:12px}
+  .ty__box{width:440px}
+}
+@media (min-width:1100px) and (min-height:521px){
+  .album{column-count:4}
+}
 @media (prefers-reduced-motion:reduce){
   .js [data-rv],.js .chars>span,.js .write,.js .leaf,.js .cart .st,.js .cart .hl,.js .cart .lf,.js .hero,.arch__inner img{transition:none!important}
   .js [data-rv],.js .chars>span,.js .write,.js .leaf,.js .cart .lf{opacity:1!important;filter:none!important;-webkit-mask-image:none!important;mask-image:none!important}
@@ -372,7 +463,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   .ov.open .ty__bf .bfly__w--l,.ov.open .ty__bf .bfly__w--r,.ov.open .ty__bf .bfly__shadow{animation:none!important}
   .phase.out{opacity:1;filter:none}
 }
-@media (min-width:441px){body{background:var(--backdrop) radial-gradient(circle at 20% 10%,rgba(255,255,255,.55),transparent 55%)}}
+@media (min-width:441px) and (max-width:699px),(min-width:441px) and (max-height:520px){body{background:var(--backdrop) radial-gradient(circle at 20% 10%,rgba(255,255,255,.55),transparent 55%)}}
 </style>
 </head>
 <body>
@@ -510,7 +601,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   </section>
 
   <!-- ============ SCENE 2: arch photo + date ============ -->
-  <section class="scene" aria-label="Thời gian">
+  <section class="scene s-date" aria-label="Thời gian">
     <figure class="arch" id="arch" data-rv="zoom" style="margin-top:0;margin-bottom:0">
       <div class="arch__outer"><div class="arch__inner"><img src="images/p08.jpg" srcset="images/p08_s.jpg 560w, images/p08.jpg 1080w" sizes="(max-width:440px) 60vw, 250px" alt="Hoàng Anh và Thu Ngân" loading="lazy" decoding="async" style="object-position:50% 80%"></div></div>
       <i class="arch__gem l" aria-hidden="true"><svg><use href="#i-gem"/></svg></i>
@@ -559,7 +650,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   </section>
 
   <!-- ============ SCENE 4: timeline ============ -->
-  <section class="scene" aria-label="Timeline">
+  <section class="scene s-tl" aria-label="Timeline">
     <img class="spray" src="images/spray.png" alt="" width="1200" height="520" loading="lazy" decoding="async" data-rv="blur">
     <h2 class="title-script script2 write">timeline</h2>
     <ol class="tl">
@@ -570,7 +661,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   </section>
 
   <!-- ============ SCENE 5: the details ============ -->
-  <section class="scene" aria-label="Thông tin">
+  <section class="scene s-details" aria-label="Thông tin">
     <h2 class="the" aria-label="The details"><span class="display chars" data-chars>THE</span><span class="script2 write" style="--d:500ms">details</span></h2>
     <div class="block">
       <h3 class="h-rose" data-rv="up">Địa điểm</h3>
@@ -609,7 +700,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   </section>
 
   <!-- ============ SCENE 6: moments / album ============ -->
-  <section class="scene" aria-label="Album ảnh cưới">
+  <section class="scene s-album" aria-label="Album ảnh cưới">
     <h2 class="the" aria-label="The moments"><span class="display chars" data-chars>THE</span><span class="script2 write" style="--d:500ms">moments</span></h2>
     <div class="album" id="album">
       <button class="a-wide" data-i="6" data-rv="up"><img src="images/p07_s.jpg" srcset="images/p07_s.jpg 560w, images/p07.jpg 1080w" sizes="(max-width:440px) 88vw, 390px" alt="" loading="lazy" decoding="async"></button>
