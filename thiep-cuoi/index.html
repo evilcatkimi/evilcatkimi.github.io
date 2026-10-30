@@ -252,6 +252,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 .a-side{grid-column:span 2;aspect-ratio:2/3}
 .a-half{grid-column:span 3;aspect-ratio:3/4}
 .a-wide2{grid-column:span 6;aspect-ratio:4/3}
+.album .wide-only{display:none}
 .more{margin-top:26px}
 
 /* ---------- rsvp ---------- */
@@ -418,7 +419,9 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   .s-details .block{margin-top:48px}
   .map-card{max-width:460px}
 
-  /* album: masonry columns */
+  /* album: masonry columns, all 15 photos, no album button */
+  .album .wide-only{display:block}
+  .s-album .more{display:none}
   .album{display:block;column-count:3;column-gap:14px;margin-top:40px}
   .album button{width:100%;margin:0 0 14px;break-inside:avoid}
   .a-wide{aspect-ratio:3/2}
@@ -705,12 +708,18 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
     <div class="album" id="album">
       <button class="a-wide" data-i="6" data-rv="up"><img src="images/p07_s.jpg" srcset="images/p07_s.jpg 560w, images/p07.jpg 1080w" sizes="(max-width:440px) 88vw, 390px" alt="" loading="lazy" decoding="async"></button>
       <button class="a-tall" data-i="12" data-rv="up"><img src="images/p13_s.jpg" srcset="images/p13_s.jpg 560w, images/p13.jpg 1080w" sizes="(max-width:440px) 58vw, 256px" alt="" loading="lazy" decoding="async" style="object-position:50% 62%"></button>
+      <button class="a-half wide-only" data-i="2" data-rv="up"><img src="images/p03_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 70%"></button>
       <button class="a-side" data-i="10" data-rv="up" style="--d:120ms"><img src="images/p11_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 70%"></button>
       <button class="a-side" data-i="13" data-rv="up" style="--d:220ms"><img src="images/p14_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 72%"></button>
+      <button class="a-side wide-only" data-i="3" data-rv="up"><img src="images/p04_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 65%"></button>
       <button class="a-half" data-i="0" data-rv="up"><img src="images/p01_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 40%"></button>
       <button class="a-half" data-i="1" data-rv="up" style="--d:120ms"><img src="images/p02_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 62%"></button>
+      <button class="a-half wide-only" data-i="5" data-rv="up"><img src="images/p06_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 75%"></button>
       <button class="a-half" data-i="9" data-rv="up"><img src="images/p10_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 55%"></button>
+      <button class="a-side wide-only" data-i="11" data-rv="up"><img src="images/p12_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 70%"></button>
       <button class="a-half" data-i="4" data-rv="up" style="--d:120ms"><img src="images/p05_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 70%"></button>
+      <button class="a-side wide-only" data-i="7" data-rv="up"><img src="images/p08_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 70%"></button>
+      <button class="a-half wide-only" data-i="8" data-rv="up"><img src="images/p09_s.jpg" alt="" loading="lazy" decoding="async" style="object-position:50% 72%"></button>
       <button class="a-wide2" data-i="14" data-rv="up"><img src="images/p15_s.jpg" srcset="images/p15_s.jpg 560w, images/p15.jpg 1080w" sizes="(max-width:440px) 88vw, 390px" alt="" loading="lazy" decoding="async" style="object-position:50% 72%"></button>
     </div>
     <div class="more" data-rv="up"><button class="btn" id="fullAlbum" type="button">Xem album · 15 ảnh</button></div>
