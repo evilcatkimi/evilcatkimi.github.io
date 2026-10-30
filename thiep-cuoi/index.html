@@ -194,6 +194,8 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 
 /* ---------- family ---------- */
 .family .fam{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+.side-gai .fam-gai{order:-1;--d:0ms!important}
+.side-gai .fam-trai{--d:150ms!important}
 .fam h3{margin:0 0 8px}
 .fam p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}
 .fam .addr{margin-top:8px;font-style:italic;font-size:14px;color:var(--soft);line-height:1.4}
@@ -682,14 +684,14 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   <!-- ============ SCENE 3: families + formal invitation ============ -->
   <section class="scene family" aria-label="Gia đình hai bên">
     <div class="fam">
-      <div data-rv="up">
+      <div class="fam-trai" data-rv="up">
         <h3 class="h-rose">Nhà trai</h3>
         <p>Ông Nguyễn Ngọc Lâm</p>
         <p>Bà Chu Thị Minh Hường</p>
         <p class="addr">23 Lê Thánh Tông, Hà Nội</p>
         <a href="https://www.google.com/maps/search/?api=1&amp;query=23%20L%C3%AA%20Th%C3%A1nh%20T%C3%B4ng%20H%C3%A0%20N%E1%BB%99i" target="_blank" rel="noopener">Chỉ đường</a>
       </div>
-      <div data-rv="up" style="--d:150ms">
+      <div class="fam-gai" data-rv="up" style="--d:150ms">
         <h3 class="h-rose">Nhà gái</h3>
         <p>Ông Trần Sỹ Thành</p>
         <p>Bà Lê Thu Huyền</p>
@@ -1388,8 +1390,11 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 const CONFIG = {
   weddingAt: "2026-11-14T18:00:00+07:00",
   defaultGuest: "Bạn và gia đình",
+  // Which family is inviting: <link>?nha=gai lists the bride's family first. Default: groom's family first.
   // Personal links: <link>#thu-an shows "Em Thu An". Key = ASCII letters, digits and hyphens only. "\n" starts a new line.
   guests: {
+    "ban": "Bạn và gia đình",
+    "anh-chi": "Anh chị và gia đình",
     "ban": "Bạn và gia đình",
     "anh-chi": "Anh chị và gia đình",
     "thu-an": "Em Thu An",
@@ -1462,6 +1467,15 @@ $$("[data-chars]").forEach((el, k) => {
   const sr = document.createElement("span"); sr.className = "sr"; sr.textContent = plain; el.appendChild(sr);
 });
 
+/* inviting side: ?nha=gai puts the bride's family first */
+const SIDE = (function(){
+  const m = location.search.match(/[?&](?:nha|ben|side)=([^&#]*)/i);
+  let v = ""; if (m) { try { v = decodeURIComponent(m[1]).toLowerCase(); } catch (e) { v = m[1].toLowerCase(); } }
+  const gai = /^(gai|gái|nha-?gai|nhà gái|co-?dau|cô dâu|bride)$/.test(v.trim());
+  document.documentElement.classList.toggle("side-gai", gai);
+  return gai ? "Nhà gái" : "Nhà trai";
+})();
+
 /* guest name: #slug from CONFIG.guests (works inside the claude.ai viewer), or ?to=... on a self-hosted copy */
 function applyGuest(){
   let name = "";
@@ -1469,7 +1483,7 @@ function applyGuest(){
   if (slug && Object.prototype.hasOwnProperty.call(CONFIG.guests, slug)) name = CONFIG.guests[slug];
   const m = name ? null : location.search.match(/[?&](?:to|khach|guest)=(.*)$/);
   if (m) {
-    const raw = m[1].split(/&(?:fbclid|gclid|zarsrc|zalo[a-z_]*|utm_[a-z]+|ref|s)=/i)[0];
+    const raw = m[1].split(/&(?:nha|ben|side|fbclid|gclid|zarsrc|zalo[a-z_]*|utm_[a-z]+|ref|s)=/i)[0];
     try { name = decodeURIComponent(raw.replace(/\+/g, " ")); } catch (e) { name = raw; }
     name = name.replace(/\s+/g, " ").trim().replace(/\s*\|\s*/g, "\n");
   }
@@ -1736,7 +1750,7 @@ function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add
     }
     msg.textContent = ""; btn.disabled = true;
     btn.innerHTML = '<span class="dots" aria-label="Đang gửi"><i></i><i></i><i></i></span>';
-    const data = { name, attend, party: going ? pv : "", message: $("#f-msg").value.trim(), guestLink: Array.from($("[data-guest]").childNodes, n => n.textContent).join(" "), at: new Date().toISOString() };
+    const data = { name, attend, party: going ? pv : "", message: $("#f-msg").value.trim(), guestLink: Array.from($("[data-guest]").childNodes, n => n.textContent).join(" "), invitedBy: SIDE, at: new Date().toISOString() };
     try { const list = JSON.parse(localStorage.getItem("rsvp") || "[]"); list.push(data); localStorage.setItem("rsvp", JSON.stringify(list)); } catch (err) {}
     const wait = new Promise(r => setTimeout(r, 1200));
     const sent = CONFIG.rsvpEndpoint ? fetch(CONFIG.rsvpEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(() => {}) : Promise.resolve();

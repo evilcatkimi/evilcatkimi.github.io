@@ -11,7 +11,7 @@
  * 4. Mở index.html, dán URL vào CONFIG.rsvpEndpoint: "https://script.google.com/macros/s/.../exec"
  */
 const SHEET_NAME = 'RSVP';
-const HEADERS = ['Thời gian', 'Tên', 'Lời nhắn', 'Tham dự', 'Số người', 'Link khách'];
+const HEADERS = ['Thời gian', 'Tên', 'Lời nhắn', 'Tham dự', 'Số người', 'Link khách', 'Thiệp của'];
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -29,7 +29,7 @@ function doPost(e) {
       const s = String(v == null ? '' : v).slice(0, 1000);
       return /^[=+\-@]/.test(s) ? "'" + s : s;
     };
-    sh.appendRow([new Date(), safe(d.name), safe(d.message), safe(d.attend), safe(d.party), safe(d.guestLink)]);
+    sh.appendRow([new Date(), safe(d.name), safe(d.message), safe(d.attend), safe(d.party), safe(d.guestLink), safe(d.invitedBy)]);
     return ContentService.createTextOutput('ok');
   } finally {
     lock.releaseLock();
