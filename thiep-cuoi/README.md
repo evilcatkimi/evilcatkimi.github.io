@@ -34,7 +34,7 @@ Chưa có URL thì form vẫn chạy (hiện popup cảm ơn) nhưng dữ liệu
 
 - Khối `CONFIG` đầu thẻ `<script>`: giờ đếm ngược, khách mặc định, link RSVP, bản đồ.
 - Chữ trên thiệp (tên bố mẹ, địa chỉ, timeline, dress code) sửa thẳng trong HTML.
-- Bản này bật sẵn bản đồ Google Maps thật (`mapEmbed: true`).
+- Bản đồ là hình vẽ cùng tông màu thiệp, bấm vào mở Google Maps. Muốn dùng bản đồ Google thật thì đổi `mapEmbed` thành `true`.
 
 ## Ảnh xem trước khi gửi qua Zalo/Messenger
 
