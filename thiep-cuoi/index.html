@@ -63,6 +63,8 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 .js .chars.in .l{opacity:1}
 .js .write{-webkit-mask-image:linear-gradient(90deg,#000 42%,transparent 58%);mask-image:linear-gradient(90deg,#000 42%,transparent 58%);-webkit-mask-size:260% 100%;mask-size:260% 100%;-webkit-mask-position:100% 0;mask-position:100% 0;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;filter:blur(6px);opacity:.2;transition:-webkit-mask-position 2.2s var(--ease),mask-position 2.2s var(--ease),filter 1.6s ease,opacity 1.2s ease;transition-delay:var(--d,0ms)}
 .js .write.in{-webkit-mask-position:0 0;mask-position:0 0;filter:none;opacity:1}
+.write{padding:.08em .18em .34em;margin-bottom:-.34em}
+.js .write.done{-webkit-mask-image:none;mask-image:none}
 .js [data-rv=line]{opacity:1;transform:scaleX(0)}
 .js [data-rv=line].in{transform:scaleX(1)}
 
@@ -552,7 +554,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
       <p class="invite__lbl caps" data-rv="up">Trân trọng kính mời</p>
       <span class="invite__guest script write" data-guest>Bạn &amp; gia đình</span>
       <p class="invite__txt" data-rv="up">Tới dự buổi tiệc chung vui cùng gia đình chúng tôi, mừng lễ thành hôn của</p>
-      <p class="invite__names script"><span class="write" style="display:table;margin:0 auto;white-space:nowrap">Hoàng Anh</span><i data-rv="blur" style="--d:600ms">&amp;</i><span class="write" style="display:table;margin:0 auto;white-space:nowrap;--d:900ms">Thu Ngân</span></p>
+      <p class="invite__names script"><span class="write" style="display:table;margin-left:auto;margin-right:auto;white-space:nowrap">Hoàng Anh</span><i data-rv="blur" style="--d:600ms">&amp;</i><span class="write" style="display:table;margin-left:auto;margin-right:auto;white-space:nowrap;--d:900ms">Thu Ngân</span></p>
     </div>
   </section>
 
@@ -677,7 +679,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
         <circle class="lf" cx="160" cy="352" r="4"/>
         <path class="lf" d="M160 360c-4 12-2 22 0 26 2-4 4-14 0-26z"/>
       </svg>
-      <p class="cart__names script" aria-label="Hoàng Anh và Thu Ngân"><span class="write" style="display:table;margin:0 auto;white-space:nowrap;--d:1600ms">Hoàng Anh</span><i data-rv="blur" style="--d:2200ms">&amp;</i><span class="write" style="display:table;margin:0 auto;white-space:nowrap;--d:2500ms">Thu Ngân</span></p>
+      <p class="cart__names script" aria-label="Hoàng Anh và Thu Ngân"><span class="write" style="display:table;margin-left:auto;margin-right:auto;white-space:nowrap;--d:1600ms">Hoàng Anh</span><i data-rv="blur" style="--d:2200ms">&amp;</i><span class="write" style="display:table;margin-left:auto;margin-right:auto;white-space:nowrap;--d:2500ms">Thu Ngân</span></p>
     </div>
     <p class="end__date" data-rv="up" style="--d:600ms">14 · 11 · 2026</p>
     <p class="end__thx" data-rv="up" style="--d:900ms">Rất hân hạnh được đón tiếp</p>
@@ -892,6 +894,12 @@ function armReveal(){
   if (!io || reduceMotion) { targets.forEach(t => t.classList.add("in")); return; }
   targets.forEach(t => io.observe(t));
 }
+
+/* the write-on mask clips anything outside its box (script swashes): remove it once the reveal is done */
+document.addEventListener("transitionend", e => {
+  const t = e.target;
+  if (t.classList && t.classList.contains("write") && t.classList.contains("in") && /mask/.test(e.propertyName)) t.classList.add("done");
+});
 
 /* hero sequence: butterfly arrives, "you're cordially invited", then the names */
 function playHero(){
