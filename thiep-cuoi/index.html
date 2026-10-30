@@ -331,6 +331,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 .ty__bf{width:120px;margin:0 auto;aspect-ratio:340/210;position:relative}
 .ty__title{display:block;margin-top:10px;font-size:clamp(40px,13vw,50px);white-space:nowrap;color:var(--ink)}
 .ty__p{margin:8px 0 0;font-size:16px;line-height:1.55;color:var(--ink-2)}
+.gl{display:block;width:max-content;max-width:none;margin:0 auto;white-space:nowrap}
 .music{position:fixed;z-index:50;right:max(14px,calc((100vw - 440px) / 2 + 14px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(255,253,249,.9);box-shadow:0 4px 14px rgba(70,50,35,.22),inset 0 0 0 1px rgba(160,130,105,.25);opacity:0;transform:scale(.6);transition:opacity .6s ease,transform .6s var(--ease)}
 .music.show{opacity:1;transform:none}
 .music .disc{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle,#efe2cf 0 13%,var(--rose) 14% 30%,#2e2521 31% 34%,#3b302a 35% 47%,#2e2521 48% 50%,#3b302a 51% 64%,#2e2521 65% 67%,#3b302a 68% 100%);animation:spin 4.5s linear infinite;animation-play-state:paused}
@@ -714,12 +715,12 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 const CONFIG = {
   weddingAt: "2026-11-14T18:00:00+07:00",
   defaultGuest: "Bạn & gia đình",
-  // Personal links: <link>#thu-an shows "Em Thu An". Key = ASCII letters, digits and hyphens only.
+  // Personal links: <link>#thu-an shows "Em Thu An". Key = ASCII letters, digits and hyphens only. "\n" starts a new line.
   guests: {
     "thu-an": "Em Thu An",
     "hung-viet": "Em Hùng Việt",
     "thu-an-hung-viet": "Em Thu An và em Hùng Việt",
-    "hai-anh": "Anh Hải Anh, em Huyền, hai cháu Min Bin"
+    "hai-anh": "Anh Hải Anh, em Huyền\nvà hai cháu Min Bin"
   },
   // Google Apps Script Web App URL that writes RSVPs into a Google Sheet (see README). "" = keep only on the guest's phone.
   rsvpEndpoint: "",
@@ -795,9 +796,25 @@ function applyGuest(){
   if (m) {
     const raw = m[1].split(/&(?:fbclid|gclid|zarsrc|zalo[a-z_]*|utm_[a-z]+|ref|s)=/i)[0];
     try { name = decodeURIComponent(raw.replace(/\+/g, " ")); } catch (e) { name = raw; }
-    name = name.replace(/\s+/g, " ").trim();
+    name = name.replace(/\s+/g, " ").trim().replace(/\s*\|\s*/g, "\n");
   }
-  $$("[data-guest]").forEach(el => el.textContent = (name || CONFIG.defaultGuest).slice(0, 60));
+  $$("[data-guest]").forEach(el => setGuest(el, (name || CONFIG.defaultGuest).slice(0, 80)));
+}
+function setGuest(el, name){
+  el.textContent = "";
+  const lines = name.split("\n").map(t => t.trim()).filter(Boolean);
+  if (lines.length < 2) { el.textContent = lines[0] || ""; return; }
+  lines.forEach(t => { const s = document.createElement("span"); s.className = "gl"; s.textContent = t; el.appendChild(s); });
+}
+/* keep each forced line on one row: shrink the whole name if its widest line would overflow */
+function fitGuest(){
+  $$("[data-guest]").forEach(el => {
+    el.style.fontSize = "";
+    const lines = el.querySelectorAll(".gl"); if (!lines.length) return;
+    const max = el.closest(".scene").clientWidth - 56;
+    const w = Math.max(...Array.from(lines, l => l.scrollWidth));
+    if (w > max) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * max / w * 0.98).toFixed(1) + "px";
+  });
 }
 applyGuest();
 window.addEventListener("hashchange", () => { applyGuest(); if (typeof fitAll === "function") fitAll(); });
@@ -836,13 +853,13 @@ const FIT = [
   [".names .n1", el => el.parentNode.clientWidth * 0.9],
   [".names .n2", el => el.parentNode.clientWidth * 0.9],
   [".ph-a__2", el => el.parentNode.clientWidth * 0.94],
-  [".ph-a__name", el => el.parentNode.parentNode.clientWidth * 0.94],
   [".invite__names span", el => el.parentNode.parentNode.clientWidth * 0.9],
   [".the .script2", el => el.parentNode.clientWidth * 0.96],
   [".title-script", el => el.parentNode.clientWidth * 0.9],
   [".cart__names span", el => $("#cart").clientWidth * 0.46]
 ];
 function fitAll(){
+  fitGuest();
   FIT.forEach(([sel, maxFn]) => $$(sel).forEach(el => {
     el.style.fontSize = "";
     const max = maxFn(el), w = el.scrollWidth;
@@ -1037,7 +1054,7 @@ function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add
     }
     msg.textContent = ""; btn.disabled = true;
     btn.innerHTML = '<span class="dots" aria-label="Đang gửi"><i></i><i></i><i></i></span>';
-    const data = { name, attend, party: going ? pv : "", message: $("#f-msg").value.trim(), guestLink: $("[data-guest]").textContent, at: new Date().toISOString() };
+    const data = { name, attend, party: going ? pv : "", message: $("#f-msg").value.trim(), guestLink: Array.from($("[data-guest]").childNodes, n => n.textContent).join(" "), at: new Date().toISOString() };
     try { const list = JSON.parse(localStorage.getItem("rsvp") || "[]"); list.push(data); localStorage.setItem("rsvp", JSON.stringify(list)); } catch (err) {}
     const wait = new Promise(r => setTimeout(r, 1200));
     const sent = CONFIG.rsvpEndpoint ? fetch(CONFIG.rsvpEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(() => {}) : Promise.resolve();
