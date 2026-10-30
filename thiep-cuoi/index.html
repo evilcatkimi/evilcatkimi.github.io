@@ -726,8 +726,8 @@ const CONFIG = {
   },
   // Google Apps Script Web App URL that writes RSVPs into a Google Sheet (see README). "" = keep only on the guest's phone.
   rsvpEndpoint: "",
-  // Background music: path to an mp3 next to the page (e.g. "music/song.mp3"). "" = no music button.
-  music: "music/song.mp3",
+  // Background music: one track is picked at random each time the invitation opens. [] = no music button.
+  music: ["music/song1.mp3", "music/song2.mp3"],
   mapQuery: "Trung tâm tiệc cưới Forevermark, 614 Lạc Long Quân, Tây Hồ, Hà Nội",
   // Live Google Maps embed. Keep false on claude.ai (embeds are blocked there); the self-host build turns it on.
   mapEmbed: true,
@@ -923,8 +923,9 @@ function playHero(){
 /* background music: starts with the tap that opens the envelope */
 const music = (function(){
   const btn = $("#music");
-  if (!CONFIG.music) return { start(){}, show(){} };
-  const a = new Audio(); a.src = CONFIG.music; a.loop = true; a.preload = "none";
+  const list = [].concat(CONFIG.music || []).filter(Boolean);
+  if (!list.length) return { start(){}, show(){} };
+  const a = new Audio(); a.src = list[Math.floor(Math.random() * list.length)]; a.loop = true; a.preload = "none";
   let want = false;
   const ui = () => { const on = !a.paused; btn.classList.toggle("on", on); btn.setAttribute("aria-pressed", String(on)); btn.setAttribute("aria-label", on ? "Tắt nhạc" : "Bật nhạc"); };
   a.addEventListener("play", ui); a.addEventListener("pause", ui);
