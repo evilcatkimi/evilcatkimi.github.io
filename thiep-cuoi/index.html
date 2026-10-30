@@ -331,6 +331,13 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 .ty__bf{width:120px;margin:0 auto;aspect-ratio:340/210;position:relative}
 .ty__title{display:block;margin-top:10px;font-size:clamp(40px,13vw,50px);white-space:nowrap;color:var(--ink)}
 .ty__p{margin:8px 0 0;font-size:16px;line-height:1.55;color:var(--ink-2)}
+.music{position:fixed;z-index:50;right:max(14px,calc((100vw - 440px) / 2 + 14px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(255,253,249,.9);box-shadow:0 4px 14px rgba(70,50,35,.22),inset 0 0 0 1px rgba(160,130,105,.25);opacity:0;transform:scale(.6);transition:opacity .6s ease,transform .6s var(--ease)}
+.music.show{opacity:1;transform:none}
+.music .disc{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle,#efe2cf 0 13%,var(--rose) 14% 30%,#2e2521 31% 34%,#3b302a 35% 47%,#2e2521 48% 50%,#3b302a 51% 64%,#2e2521 65% 67%,#3b302a 68% 100%);animation:spin 4.5s linear infinite;animation-play-state:paused}
+.music.on .disc{animation-play-state:running}
+.music .off{position:absolute;width:30px;height:2px;background:var(--rose);transform:rotate(-45deg);border-radius:2px;box-shadow:0 0 0 1.5px rgba(255,253,249,.9);transition:opacity .3s}
+.music.on .off{opacity:0}
+@keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;z-index:90;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:rgba(40,32,26,.9);color:#fff;font-size:14px;padding:8px 16px;border-radius:999px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
@@ -358,6 +365,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   .js .bfly-fly{opacity:1}
   .hero.go .bfly-fly,.hero.go .bfly__w--l,.hero.go .bfly__w--r,.hero.go .bfly__shadow,.hero.idle .bfly__w--l,.hero.idle .bfly__w--r,.hero.idle .bfly__shadow,.hero__glow,.sweep::before,.sweep::after,.seal__shine::after,.pin-pulse,.env__hint span,.scroll-cue::after{animation:none!important}
   .phase-a{display:none}
+  .music .disc{animation:none!important}
   .ov.open .ty__bf .bfly__w--l,.ov.open .ty__bf .bfly__w--r,.ov.open .ty__bf .bfly__shadow{animation:none!important}
   .phase.out{opacity:1;filter:none}
 }
@@ -697,6 +705,8 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   </div>
 </div>
 
+<button class="music" id="music" type="button" aria-label="Bật nhạc" aria-pressed="false" hidden><span class="disc" aria-hidden="true"></span><span class="off" aria-hidden="true"></span></button>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -708,11 +718,13 @@ const CONFIG = {
   guests: {
     "thu-an": "Em Thu An",
     "hung-viet": "Em Hùng Việt",
-    "thu-an-hung-viet": "Em Thu An & em Hùng Việt",
+    "thu-an-hung-viet": "Em Thu An và em Hùng Việt",
     "hai-anh": "Anh Hải Anh, em Thanh Huyền và hai cháu Min Bin"
   },
   // Google Apps Script Web App URL that writes RSVPs into a Google Sheet (see README). "" = keep only on the guest's phone.
   rsvpEndpoint: "",
+  // Background music: path to an mp3 next to the page (e.g. "music/song.mp3"). "" = no music button.
+  music: "music/song.mp3",
   mapQuery: "Trung tâm tiệc cưới Forevermark, 614 Lạc Long Quân, Tây Hồ, Hà Nội",
   // Live Google Maps embed. Keep false on claude.ai (embeds are blocked there); the self-host build turns it on.
   mapEmbed: true,
@@ -883,6 +895,20 @@ function playHero(){
   setTimeout(() => hero.classList.add("idle"), 3000);
 }
 
+/* background music: starts with the tap that opens the envelope */
+const music = (function(){
+  const btn = $("#music");
+  if (!CONFIG.music) return { start(){}, show(){} };
+  const a = new Audio(); a.src = CONFIG.music; a.loop = true; a.preload = "none";
+  let want = false;
+  const ui = () => { const on = !a.paused; btn.classList.toggle("on", on); btn.setAttribute("aria-pressed", String(on)); btn.setAttribute("aria-label", on ? "Tắt nhạc" : "Bật nhạc"); };
+  a.addEventListener("play", ui); a.addEventListener("pause", ui);
+  function play(){ want = true; const pr = a.play(); if (pr && pr.catch) pr.catch(() => { want = false; ui(); }); }
+  btn.addEventListener("click", () => { if (a.paused) play(); else { want = false; a.pause(); } });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { if (!a.paused) a.pause(); } else if (want) a.play().catch(() => {}); });
+  return { start: play, show(){ btn.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => btn.classList.add("show"))); } };
+})();
+
 /* envelope */
 (function envelope(){
   const env = $("#env"), app = $("#app");
@@ -891,11 +917,12 @@ function playHero(){
   let opened = false;
   function open(){
     if (opened) return; opened = true;
+    music.start();
     app.inert = false; app.removeAttribute("aria-hidden");
-    if (reduceMotion) { env.classList.add("gone"); unlockScroll(); playHero(); armReveal(); setTimeout(() => env.remove(), 700); return; }
+    if (reduceMotion) { env.classList.add("gone"); unlockScroll(); playHero(); armReveal(); music.show(); setTimeout(() => env.remove(), 700); return; }
     env.classList.add("open");
     setTimeout(playHero, 700);
-    setTimeout(() => { env.classList.add("gone"); unlockScroll(); armReveal(); }, 2050);
+    setTimeout(() => { env.classList.add("gone"); unlockScroll(); armReveal(); music.show(); }, 2050);
     setTimeout(() => env.remove(), 2800);
   }
   $("#envStage").addEventListener("click", open);
