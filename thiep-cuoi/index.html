@@ -239,6 +239,14 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 .hearts{display:flex;justify-content:center;gap:14px;margin-top:18px}
 .hearts svg{width:40px;height:36px;overflow:visible;filter:drop-shadow(0 3px 4px rgba(90,60,45,.22))}
 .hearts use{stroke:rgba(140,110,90,.28);stroke-width:.8}
+.rainbow{display:block;width:min(66%,230px);height:auto;margin:16px auto 0;overflow:visible}
+.rainbow .arc{fill:none;stroke-width:6.6;stroke-linecap:round;opacity:.85}
+.rainbow .cloud path{fill:#fffaf2;stroke:#bfae9c;stroke-width:.8;stroke-linejoin:round}
+.js .rainbow .arc{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.6s cubic-bezier(.3,.6,.2,1);transition-delay:var(--d,0ms)}
+.rainbow.in .arc{stroke-dashoffset:0}
+.js .rainbow .cloud{opacity:0;transition:opacity .9s ease .9s}
+.rainbow.in .cloud{opacity:1}
+.dc-sub{margin:4px 0 0;font-style:italic;font-size:15px;color:var(--soft)}
 .dc-note{margin:12px 0 0;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
 
 /* ---------- album ---------- */
@@ -291,7 +299,11 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 @keyframes dot{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
 
 /* ---------- ending ---------- */
-.end{min-height:92vh;min-height:92svh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+.end{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow:hidden}
+.scene.end{padding-bottom:0}
+.end__top{display:flex;flex-direction:column;align-items:center;width:100%}
+.end__rings{flex:1 0 auto;display:flex;align-items:center;justify-content:center;width:100%;min-height:min(34vh,300px);padding:28px 0 16px}
+.end .credit{width:100%;padding-top:0}
 .cart{position:relative;width:min(86%,330px)}
 .cart svg{display:block;width:100%;height:auto;overflow:visible}
 .cart .st{fill:none;stroke:#a48e79;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
@@ -303,7 +315,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 .cart.in .lf{opacity:1}
 .cart__names{position:absolute;left:0;right:0;top:35%;margin:0;font-size:clamp(30px,8.6vw,36px);color:var(--ink);line-height:1.18}
 .cart__names i{display:block;font-style:normal;font-size:.7em;opacity:.7}
-.rings{display:block;width:min(70%,270px);height:auto;margin:26px auto 0;overflow:visible}
+.rings{display:block;width:min(70%,270px);height:auto;margin:0 auto;overflow:visible}
 .rings .la-band{fill:#f3ebdf}
 .rings .la-band.c{fill:#f4ede3}
 .rings .la-st{fill:none;stroke:#8f7764;stroke-width:.75;stroke-linecap:round}
@@ -499,6 +511,8 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   .js .bfly-fly{opacity:1}
   .hero.go .bfly-fly,.hero.go .bfly__w--l,.hero.go .bfly__w--r,.hero.go .bfly__shadow,.hero.idle .bfly__w--l,.hero.idle .bfly__w--r,.hero.idle .bfly__shadow,.hero__glow,.sweep::before,.sweep::after,.seal__shine::after,.pin-pulse,.env__hint span,.scroll-cue::after{animation:none!important}
   .phase-a{display:none}
+  .js .rainbow .arc{transition:none!important;stroke-dashoffset:0!important}
+  .js .rainbow .cloud{opacity:1!important;transition:none!important}
   .js .rings *{transition:none!important}
   .js .rings .gb-st,.js .rings .stem{stroke-dashoffset:0!important}
   .rings .spark{animation:none!important}
@@ -733,12 +747,9 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
     <div class="block">
       <h3 class="h-rose" data-rv="up">Dress code</h3>
       <span class="orn" data-rv="line"><svg><use href="#i-orn"/></svg></span>
-      <div class="hearts" aria-label="Tông màu trắng, be, nâu">
-        <svg data-rv="zoom" style="--d:100ms" viewBox="0 0 40 36"><use href="#i-heart" fill="url(#gHeart1)"/></svg>
-        <svg data-rv="zoom" style="--d:250ms" viewBox="0 0 40 36"><use href="#i-heart" fill="url(#gHeart2)"/></svg>
-        <svg data-rv="zoom" style="--d:400ms" viewBox="0 0 40 36"><use href="#i-heart" fill="url(#gHeart3)"/></svg>
-      </div>
-      <p class="dc-note" data-rv="up" style="--d:450ms">Trắng · Be · Nâu</p>
+      <svg class="rainbow" id="rainbow" viewBox="0 0 200 112" aria-hidden="true"><defs><filter id="fRain" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter></defs><g filter="url(#fRain)"><path class="arc" pathLength="1" style="stroke:#c99a92;--d:0ms" d="M22 96A78 78 0 0 1 178 96"/><path class="arc" pathLength="1" style="stroke:#d5ab8c;--d:140ms" d="M30 96A70 70 0 0 1 170 96"/><path class="arc" pathLength="1" style="stroke:#d9c08f;--d:280ms" d="M38 96A62 62 0 0 1 162 96"/><path class="arc" pathLength="1" style="stroke:#aeb794;--d:420ms" d="M46 96A54 54 0 0 1 154 96"/><path class="arc" pathLength="1" style="stroke:#9fb0bb;--d:560ms" d="M54 96A46 46 0 0 1 146 96"/><path class="arc" pathLength="1" style="stroke:#b3a1bb;--d:700ms" d="M62 96A38 38 0 0 1 138 96"/></g><g class="cloud" transform="translate(22 94)"><path d="M-17 6c-6 0-8-8-2-10 0-7 9-9 12-4 3-7 14-6 15 1 7-1 10 7 4 10-1 2-3 3-5 3z"/></g><g class="cloud" transform="translate(178 94)"><path d="M-17 6c-6 0-8-8-2-10 0-7 9-9 12-4 3-7 14-6 15 1 7-1 10 7 4 10-1 2-3 3-5 3z"/></g></svg>
+      <p class="dc-note" data-rv="up" style="--d:900ms">Không yêu cầu dress code</p>
+      <p class="dc-sub" data-rv="up" style="--d:1000ms">Bạn cứ mặc thật thoải mái và rạng rỡ nhé!</p>
     </div>
   </section>
 
@@ -789,6 +800,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
   <!-- ============ SCENE 8: ending cartouche ============ -->
   <section class="scene end" id="end" aria-label="Lời cảm ơn">
     <div class="sweep" aria-hidden="true"></div>
+    <div class="end__top">
     <div class="cart" id="cart">
       <svg viewBox="0 0 320 420" aria-hidden="true">
         <g id="cartHalf">
@@ -823,6 +835,8 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
     </div>
     <p class="end__date" data-rv="up" style="--d:600ms">14 · 11 · 2026</p>
     <p class="end__thx" data-rv="up" style="--d:900ms">Rất hân hạnh được đón tiếp</p>
+    </div>
+    <div class="end__rings">
     <svg class="rings" id="rings" viewBox="40 30 220 160" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1">
   <stop offset="0" stop-color="#f4e8d2"/><stop offset=".35" stop-color="#e3cca5"/><stop offset=".6" stop-color="#cfb084"/><stop offset=".85" stop-color="#e6d3b1"/><stop offset="1" stop-color="#d4b98f"/>
@@ -1339,8 +1353,9 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 <circle class="eprong" cx="225.18" cy="109.07" r="0.63"/>
 <circle class="eprong" cx="230.32" cy="116.30" r="0.63"/>
 <circle class="eprong" cx="224.57" cy="115.08" r="0.63"/></g><path class="stem" pathLength="1" d="M70 168C92 160 108 150 122 136"/><path class="lf1" d="M80.00 163.00 L79.47 161.78 L78.89 160.70 L78.28 159.68 L77.65 158.72 L77.01 157.83 L76.33 156.99 L75.64 156.23 L74.91 155.54 L74.16 154.93 L73.38 154.40 L72.56 153.96 L71.72 153.60 L70.84 153.33 L69.93 153.15 L68.99 153.05 L68.02 153.03 L67.02 153.09 L66.00 153.23 L64.95 153.44 L63.87 153.71 L62.78 154.04 L61.66 154.43 L60.52 154.89 L59.33 155.48 L59.33 155.48 L59.93 156.51 L60.56 157.44 L61.22 158.32 L61.89 159.15 L62.58 159.93 L63.29 160.66 L64.02 161.33 L64.78 161.95 L65.55 162.50 L66.35 162.98 L67.17 163.40 L68.02 163.75 L68.90 164.03 L69.79 164.24 L70.72 164.38 L71.67 164.45 L72.64 164.47 L73.63 164.42 L74.64 164.32 L75.67 164.16 L76.72 163.96 L77.79 163.71 L78.88 163.41 L80.00 163.00Z"/><path class="vein" d="M80.0 163.0L62.4 156.6"/><path class="lf2" d="M90.00 158.00 L88.82 158.28 L87.76 158.63 L86.74 159.01 L85.78 159.41 L84.87 159.85 L84.01 160.32 L83.22 160.82 L82.48 161.36 L81.81 161.93 L81.22 162.55 L80.69 163.21 L80.24 163.91 L79.86 164.65 L79.55 165.44 L79.31 166.26 L79.15 167.13 L79.05 168.04 L79.01 168.98 L79.04 169.95 L79.11 170.96 L79.24 172.00 L79.42 173.06 L79.65 174.16 L80.00 175.32 L80.00 175.32 L81.03 174.95 L81.96 174.53 L82.86 174.08 L83.71 173.61 L84.52 173.12 L85.29 172.60 L86.01 172.05 L86.68 171.48 L87.30 170.87 L87.86 170.24 L88.36 169.56 L88.81 168.86 L89.20 168.12 L89.53 167.35 L89.80 166.54 L90.01 165.71 L90.18 164.84 L90.29 163.94 L90.35 163.02 L90.38 162.07 L90.36 161.09 L90.30 160.10 L90.19 159.07 L90.00 158.00Z"/><path class="vein" d="M90.0 158.0L81.5 172.7"/><path class="lf2" d="M101.00 152.00 L100.83 150.71 L100.59 149.54 L100.30 148.42 L99.98 147.36 L99.62 146.35 L99.22 145.39 L98.78 144.50 L98.29 143.67 L97.75 142.91 L97.17 142.22 L96.53 141.60 L95.84 141.06 L95.10 140.60 L94.30 140.21 L93.45 139.89 L92.56 139.65 L91.61 139.48 L90.62 139.37 L89.58 139.32 L88.51 139.33 L87.40 139.39 L86.25 139.50 L85.07 139.67 L83.80 139.95 L83.80 139.95 L84.07 141.09 L84.42 142.12 L84.79 143.12 L85.19 144.07 L85.62 144.98 L86.08 145.84 L86.58 146.66 L87.11 147.42 L87.68 148.13 L88.30 148.78 L88.95 149.38 L89.65 149.91 L90.38 150.38 L91.16 150.79 L91.99 151.14 L92.85 151.44 L93.75 151.68 L94.68 151.87 L95.65 152.01 L96.66 152.10 L97.69 152.15 L98.75 152.16 L99.84 152.13 L101.00 152.00Z"/><path class="vein" d="M101.0 152.0L86.4 141.8"/><path class="lf1" d="M110.00 146.00 L108.99 146.43 L108.09 146.90 L107.25 147.39 L106.46 147.90 L105.71 148.43 L105.02 148.98 L104.39 149.54 L103.82 150.14 L103.32 150.75 L102.88 151.39 L102.52 152.06 L102.22 152.75 L102.00 153.47 L101.85 154.21 L101.78 154.98 L101.77 155.77 L101.82 156.59 L101.94 157.43 L102.12 158.30 L102.35 159.18 L102.63 160.08 L102.96 161.00 L103.35 161.94 L103.84 162.91 L103.84 162.91 L104.70 162.43 L105.47 161.91 L106.20 161.38 L106.88 160.83 L107.53 160.27 L108.13 159.69 L108.69 159.09 L109.20 158.48 L109.65 157.85 L110.05 157.19 L110.40 156.52 L110.68 155.83 L110.91 155.11 L111.08 154.37 L111.19 153.62 L111.25 152.84 L111.26 152.04 L111.21 151.23 L111.12 150.40 L110.99 149.55 L110.81 148.69 L110.60 147.81 L110.34 146.92 L110.00 146.00Z"/><path class="vein" d="M110.0 146.0L104.8 160.4"/><path class="lf1" d="M118.00 140.00 L118.04 139.02 L118.00 138.11 L117.93 137.25 L117.82 136.41 L117.68 135.61 L117.50 134.84 L117.28 134.12 L117.02 133.43 L116.72 132.79 L116.37 132.20 L115.97 131.66 L115.53 131.16 L115.03 130.71 L114.48 130.32 L113.89 129.97 L113.25 129.66 L112.57 129.40 L111.84 129.19 L111.08 129.01 L110.28 128.87 L109.44 128.76 L108.57 128.69 L107.67 128.65 L106.69 128.69 L106.69 128.69 L106.75 129.56 L106.87 130.38 L107.03 131.17 L107.21 131.94 L107.41 132.67 L107.65 133.38 L107.92 134.05 L108.22 134.69 L108.56 135.30 L108.93 135.87 L109.35 136.40 L109.80 136.89 L110.29 137.34 L110.82 137.75 L111.39 138.13 L111.99 138.47 L112.63 138.77 L113.31 139.04 L114.01 139.27 L114.75 139.48 L115.51 139.66 L116.30 139.81 L117.12 139.94 L118.00 140.00Z"/><path class="vein" d="M118.0 140.0L108.4 130.4"/><path class="lf2" d="M86.00 161.00 L85.14 160.76 L84.32 160.60 L83.53 160.48 L82.76 160.39 L82.01 160.35 L81.29 160.34 L80.59 160.37 L79.91 160.46 L79.27 160.59 L78.65 160.77 L78.06 161.00 L77.50 161.29 L76.98 161.63 L76.48 162.02 L76.02 162.46 L75.58 162.96 L75.17 163.50 L74.79 164.09 L74.44 164.72 L74.10 165.39 L73.79 166.10 L73.50 166.85 L73.23 167.63 L73.01 168.50 L73.01 168.50 L73.81 168.63 L74.57 168.70 L75.31 168.73 L76.03 168.74 L76.74 168.71 L77.43 168.65 L78.10 168.56 L78.75 168.43 L79.37 168.27 L79.97 168.06 L80.55 167.81 L81.10 167.52 L81.63 167.19 L82.14 166.81 L82.62 166.39 L83.08 165.93 L83.51 165.44 L83.92 164.90 L84.32 164.34 L84.69 163.74 L85.05 163.10 L85.39 162.45 L85.71 161.76 L86.00 161.00Z"/><path class="vein" d="M86.0 161.0L75.0 167.4"/><path class="lf1" d="M232.00 66.00 L233.05 66.32 L234.04 66.53 L235.00 66.70 L235.94 66.82 L236.85 66.90 L237.73 66.92 L238.58 66.89 L239.39 66.80 L240.17 66.66 L240.92 66.45 L241.63 66.17 L242.29 65.83 L242.92 65.42 L243.52 64.95 L244.07 64.41 L244.59 63.80 L245.07 63.14 L245.52 62.42 L245.94 61.65 L246.33 60.82 L246.69 59.95 L247.03 59.03 L247.34 58.07 L247.59 57.00 L247.59 57.00 L246.62 56.82 L245.70 56.72 L244.80 56.67 L243.92 56.64 L243.06 56.66 L242.23 56.71 L241.42 56.81 L240.64 56.96 L239.88 57.15 L239.15 57.39 L238.46 57.69 L237.79 58.04 L237.16 58.44 L236.56 58.89 L235.98 59.40 L235.44 59.96 L234.92 60.56 L234.43 61.21 L233.97 61.91 L233.53 62.64 L233.11 63.42 L232.71 64.22 L232.33 65.07 L232.00 66.00Z"/><path class="vein" d="M232.0 66.0L245.3 58.4"/><path class="lf2" d="M236.00 70.00 L236.07 70.89 L236.20 71.71 L236.35 72.50 L236.54 73.25 L236.75 73.97 L236.99 74.65 L237.26 75.30 L237.57 75.91 L237.91 76.47 L238.30 76.99 L238.72 77.46 L239.17 77.89 L239.67 78.26 L240.21 78.59 L240.79 78.88 L241.40 79.12 L242.05 79.32 L242.74 79.47 L243.45 79.59 L244.20 79.68 L244.97 79.73 L245.77 79.75 L246.60 79.73 L247.49 79.64 L247.49 79.64 L247.34 78.85 L247.14 78.11 L246.92 77.40 L246.68 76.72 L246.41 76.06 L246.12 75.44 L245.81 74.84 L245.47 74.27 L245.10 73.74 L244.70 73.25 L244.27 72.79 L243.80 72.37 L243.31 71.99 L242.78 71.64 L242.22 71.33 L241.64 71.06 L241.02 70.82 L240.38 70.62 L239.71 70.44 L239.02 70.29 L238.30 70.17 L237.57 70.08 L236.81 70.01 L236.00 70.00Z"/><path class="vein" d="M236.0 70.0L245.8 78.2"/><path class="lf2" d="M228.00 74.00 L228.73 73.54 L229.37 73.06 L229.96 72.57 L230.52 72.07 L231.03 71.57 L231.49 71.06 L231.91 70.54 L232.27 70.01 L232.58 69.48 L232.83 68.93 L233.02 68.37 L233.15 67.80 L233.23 67.22 L233.24 66.63 L233.19 66.03 L233.08 65.42 L232.92 64.80 L232.71 64.17 L232.44 63.53 L232.14 62.88 L231.79 62.23 L231.40 61.57 L230.96 60.90 L230.43 60.21 L230.43 60.21 L229.83 60.70 L229.29 61.20 L228.80 61.70 L228.34 62.21 L227.91 62.73 L227.52 63.25 L227.16 63.78 L226.85 64.32 L226.58 64.87 L226.36 65.42 L226.19 65.98 L226.06 66.55 L225.99 67.13 L225.96 67.72 L225.98 68.31 L226.04 68.92 L226.15 69.53 L226.30 70.15 L226.49 70.77 L226.72 71.40 L226.98 72.04 L227.27 72.69 L227.60 73.34 L228.00 74.00Z"/><path class="vein" d="M228.0 74.0L230.1 62.3"/><path class="stem" pathLength="1" d="M222 80C228 74 233 70 240 62"/><circle class="berry" cx="124" cy="133" r="2.4"/><circle class="berry" cx="128" cy="137" r="2"/><circle class="berry" cx="242" cy="60" r="2.2"/></svg>
+    </div>
+    <p class="credit">Hoàng Anh &amp; Thu Ngân</p>
   </section>
-  <p class="credit">Hoàng Anh &amp; Thu Ngân</p>
 </div>
 
 <!-- ============ LIGHTBOX ============ -->
@@ -1546,7 +1561,7 @@ const io = "IntersectionObserver" in window ? new IntersectionObserver(entries =
 }, { rootMargin: "0px 0px -8% 0px", threshold: 0.15 }) : null;
 function armReveal(){
   const hero = $("#hero");
-  const targets = $$("[data-rv], .chars, .write, .leaf, #cart, #end, #arch, #rings").filter(el => !hero.contains(el));
+  const targets = $$("[data-rv], .chars, .write, .leaf, #cart, #end, #arch, #rings, #rainbow").filter(el => !hero.contains(el));
   if (!io || reduceMotion) { targets.forEach(t => t.classList.add("in")); return; }
   targets.forEach(t => io.observe(t));
 }
