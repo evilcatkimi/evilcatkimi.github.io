@@ -1403,15 +1403,13 @@ const CONFIG = {
   guests: {
     "ban": "Bạn và gia đình",
     "anh-chi": "Anh chị và gia đình",
-    "ban": "Bạn và gia đình",
-    "anh-chi": "Anh chị và gia đình",
     "thu-an": "Em Thu An",
     "hung-viet": "Em Hùng Việt",
     "thu-an-hung-viet": "Em Thu An và em Hùng Việt",
     "hai-anh": "Anh Hải Anh, em Huyền\nvà hai cháu Min Bin"
   },
-  // Google Apps Script Web App URL that writes RSVPs into a Google Sheet (see README). "" = keep only on the guest's phone.
-  rsvpEndpoint: "",
+  // Google Apps Script Web App URL that writes RSVPs into a Google Sheet (extras/rsvp-google-sheet.gs). The /admin page reads the same URL.
+  rsvpEndpoint: "https://script.google.com/macros/s/AKfycby7AbrTfYqiO5_UVN1lKNnMJaMLvuNu7vpqoItMNHlr0Lz0I7x3zTz1ygQrHN0Qh-9C/exec",
   // Background music: one track is picked at random each time the invitation opens. [] = no music button.
   music: ["music/song1.mp3", "music/song2.mp3"],
   mapQuery: "Trung tâm tiệc cưới Forevermark, 614 Lạc Long Quân, Tây Hồ, Hà Nội",
@@ -1735,10 +1733,34 @@ window.addEventListener("keydown", e => {
 
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 2200); }
 
+/* RSVP: saved to the Google Sheet behind CONFIG.rsvpEndpoint. The same id is reused on a retry, so a guest who
+   taps "send" twice on a bad connection is stored once. */
+function rsvpId(){
+  try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+  return Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+}
+async function sendRsvp(data){
+  if (!CONFIG.rsvpEndpoint) return true;
+  const opts = { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) };
+  for (let i = 0; i < 2; i++) {
+    try {
+      const r = await fetch(CONFIG.rsvpEndpoint, opts);
+      const j = await r.json();
+      if (j && j.ok) return true;
+    } catch (e) {
+      // Some in-app browsers block reading the reply; the request itself still goes through.
+      try { await fetch(CONFIG.rsvpEndpoint, Object.assign({ mode: "no-cors" }, opts)); return true; } catch (e2) {}
+    }
+    await new Promise(r => setTimeout(r, 900));
+  }
+  return false;
+}
+
 /* RSVP */
 (function rsvp(){
   const form = $("#rsvpForm"), btn = $("#sendBtn"), msg = $("#formMsg"), label = btn.innerHTML;
   const party = $("#f-party").closest(".field");
+  let pendingId = "";
   $("#f-attend").addEventListener("change", e => { party.hidden = e.target.value.startsWith("Xin lỗi"); });
   form.addEventListener("input", e => { const f = e.target.closest(".field"); if (f) f.classList.remove("err"); });
   form.addEventListener("change", e => { const f = e.target.closest(".field"); if (f) f.classList.remove("err"); });
@@ -1758,12 +1780,17 @@ function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add
     }
     msg.textContent = ""; btn.disabled = true;
     btn.innerHTML = '<span class="dots" aria-label="Đang gửi"><i></i><i></i><i></i></span>';
-    const data = { name, attend, party: going ? pv : "", message: $("#f-msg").value.trim(), guestLink: Array.from($("[data-guest]").childNodes, n => n.textContent).join(" "), invitedBy: SIDE, at: new Date().toISOString() };
+    const slug = (location.hash || "").slice(1).toLowerCase();
+    const data = {
+      id: pendingId || (pendingId = rsvpId()), name, going, attend, party: going ? parseInt(pv, 10) || 1 : 0, message: $("#f-msg").value.trim(),
+      guestName: Array.from($("[data-guest]").childNodes, n => n.textContent.trim()).filter(Boolean).join(" "),
+      slug: Object.prototype.hasOwnProperty.call(CONFIG.guests, slug) ? slug : "", side: SIDE, at: new Date().toISOString()
+    };
     try { const list = JSON.parse(localStorage.getItem("rsvp") || "[]"); list.push(data); localStorage.setItem("rsvp", JSON.stringify(list)); } catch (err) {}
-    const wait = new Promise(r => setTimeout(r, 1200));
-    const sent = CONFIG.rsvpEndpoint ? fetch(CONFIG.rsvpEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(() => {}) : Promise.resolve();
-    await Promise.all([wait, sent]);
+    const [, ok] = await Promise.all([new Promise(r => setTimeout(r, 1200)), sendRsvp(data)]);
     btn.disabled = false; btn.innerHTML = label;
+    if (!ok) { msg.textContent = "Chưa gửi được, bạn kiểm tra mạng rồi bấm gửi lại giúp mình nhé."; return; }
+    pendingId = "";
     $("#tyText").innerHTML = going
       ? "Cảm ơn bạn đã phản hồi.<br>Chúng mình rất mong được gặp bạn!"
       : "Tiếc quá, hẹn gặp bạn dịp gần nhất nhé!<br>Cảm ơn lời chúc của bạn.";
