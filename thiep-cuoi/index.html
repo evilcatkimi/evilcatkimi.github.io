@@ -9,7 +9,6 @@
 <meta property="og:title" content="Hoàng Anh &amp; Thu Ngân - 14.11.2026">
 <meta property="og:description" content="You're cordially invited - trân trọng kính mời bạn tới chung vui cùng gia đình chúng mình.">
 <meta property="og:image" content="https://evilcatkimi.github.io/thiep-cuoi/images/p13.jpg">
-<meta property="og:url" content="https://evilcatkimi.github.io/thiep-cuoi/">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1488,10 +1487,20 @@ const SIDE = (function(){
   return gai ? "Nhà gái" : "Nhà trai";
 })();
 
-/* guest name: #slug from CONFIG.guests (works inside the claude.ai viewer), or ?to=... on a self-hosted copy */
+/* The guest's link key. Share links are /thiep-cuoi/<slug>/ (a small page that forwards here as ?g=<slug>), because
+   Facebook and Zalo drop the #part when someone taps the link preview. #<slug> still works for older links and inside
+   the claude.ai viewer. */
+function guestSlug(){
+  const own = k => k && Object.prototype.hasOwnProperty.call(CONFIG.guests, k);
+  const h = (location.hash || "").slice(1).toLowerCase();
+  if (own(h)) return h;
+  const m = location.search.match(/[?&]g=([a-z0-9-]+)/i);
+  return m && own(m[1].toLowerCase()) ? m[1].toLowerCase() : "";
+}
+/* guest name: link key from CONFIG.guests, or ?to=... for a one-off name */
 function applyGuest(){
   let name = "";
-  const slug = (location.hash || "").slice(1).toLowerCase();
+  const slug = guestSlug();
   if (slug && Object.prototype.hasOwnProperty.call(CONFIG.guests, slug)) name = CONFIG.guests[slug];
   const m = name ? null : location.search.match(/[?&](?:to|khach|guest)=(.*)$/);
   if (m) {
@@ -1786,7 +1795,7 @@ async function sendRsvp(data){
     }
     msg.textContent = ""; btn.disabled = true;
     btn.innerHTML = '<span class="dots" aria-label="Đang gửi"><i></i><i></i><i></i></span>';
-    const slug = (location.hash || "").slice(1).toLowerCase();
+    const slug = guestSlug();
     const data = {
       id: pendingId || (pendingId = rsvpId()), name, going, attend, party: going ? parseInt(pv, 10) || 1 : 0, message: $("#f-msg").value.trim(),
       guestName: Array.from($("[data-guest]").childNodes, n => n.textContent.trim()).filter(Boolean).join(" "),
