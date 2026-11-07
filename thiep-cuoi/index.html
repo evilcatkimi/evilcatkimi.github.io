@@ -205,6 +205,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
 .invite{margin-top:44px}
 .invite__lbl{margin:0;font-size:13px;letter-spacing:.24em;color:var(--soft)}
 .invite__guest{display:table;margin:6px auto 0;text-wrap:balance;line-height:1.15;font-size:clamp(32px,9.5vw,40px);color:var(--ink-2);max-width:100%;overflow-wrap:anywhere}
+.side-gai .invite__txt{white-space:pre-line}
 .invite__txt{margin:14px auto 0;max-width:22em;font-size:16px;line-height:1.6;color:var(--ink)}
 .invite__names{margin:18px 0 0;font-size:clamp(40px,12vw,50px);color:var(--ink);line-height:1.15}
 .invite__names i{display:block;font-style:normal;font-size:.6em;opacity:.55;line-height:.8}
@@ -716,7 +717,7 @@ a{color:inherit;-webkit-tap-highlight-color:transparent}
     <div class="invite">
       <p class="invite__lbl caps" data-rv="up">Trân trọng kính mời</p>
       <span class="invite__guest script write" data-guest>Bạn &amp; gia đình</span>
-      <p class="invite__txt" data-rv="up">Tới dự buổi tiệc chung vui cùng gia đình chúng tôi, mừng lễ thành hôn của</p>
+      <p class="invite__txt" data-rv="up" data-gai="Tới dự bữa cơm thân mật vào lúc 18h00,&#10;mừng lễ thành hôn cùng gia đình chúng tôi">Tới dự buổi tiệc chung vui cùng gia đình chúng tôi, mừng lễ thành hôn của</p>
       <p class="invite__names script"><span class="write" style="display:table;margin-left:auto;margin-right:auto;white-space:nowrap">Hoàng Anh</span><i data-rv="blur" style="--d:600ms">&amp;</i><span class="write" style="display:table;margin-left:auto;margin-right:auto;white-space:nowrap;--d:900ms">Thu Ngân</span></p>
     </div>
   </section>
@@ -1510,6 +1511,7 @@ const SIDE = (function(){
   let v = ""; if (m) { try { v = decodeURIComponent(m[1]).toLowerCase(); } catch (e) { v = m[1].toLowerCase(); } }
   const gai = /^(gai|gái|nha-?gai|nhà gái|co-?dau|cô dâu|bride)$/.test(v.trim());
   document.documentElement.classList.toggle("side-gai", gai);
+  if (gai) document.querySelectorAll("[data-gai]").forEach(el => { el.textContent = el.dataset.gai; });
   return gai ? "Nhà gái" : "Nhà trai";
 })();
 
